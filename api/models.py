@@ -15,4 +15,4 @@ class User(AbstractUser):
         default='user',
     )
 
-    description = models.TextField(max_length=500, blank=True)
+    bio = models.TextField(max_length=500, blank=True)
