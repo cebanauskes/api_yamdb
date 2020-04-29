@@ -7,7 +7,6 @@ from rest_framework_simplejwt.tokens import AccessToken
 from django.contrib.auth.tokens import default_token_generator
 from django.core.mail import send_mail
 
-
 from .models import User
 from .serializers import SendCodeSerializer, CheckConfirmationCodeSerializer, UserSerializer
 from .permissions import IsAdmin
