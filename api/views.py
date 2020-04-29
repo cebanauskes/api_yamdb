@@ -3,20 +3,46 @@ from rest_framework import viewsets, filters, status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.decorators import api_view
+from rest_framework_simplejwt.tokens import AccessToken
+from django.contrib.auth.tokens import default_token_generator
+from django.core.mail import send_mail
+
 
 from .models import User
-from .serializers import UserSerializer
+from .serializers import SendCodeSerializer, CheckConfirmationCodeSerializer, UserSerializer
 from .permissions import IsAdmin
 
 
 @api_view(['POST'])
 def send_confirmation_code(request):
-    pass
+    serializer = SendCodeSerializer(data=request.data)
+    email = request.data['email']
+    if serializer.is_valid():
+        user = User.objects.filter(email=email).exists()
+        if not user:
+            User.objects.create_user(email=email)
+        user = get_object_or_404(User, email=email)
+        confirmation_code = default_token_generator.make_token(user)
+        mail_subject = 'Код подтверждения на Yamdb.ru'
+        message = f'Ваш код подтверждения: {confirmation_code}'
+        send_mail(mail_subject, message, 'Yamdb.ru <admin@yamdb.ru>', [email], fail_silently=False)
+        return Response(f'Код отправлен на адрес {email}', status=status.HTTP_200_OK)
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 @api_view(['POST'])
 def get_jwt_token(request):
-    pass
+    serializer = CheckConfirmationCodeSerializer(data=request.data)
+    if serializer.is_valid():
+        email = serializer.data.get('email')
+        confirmation_code = serializer.data.get('confirmation_code')
+        user = get_object_or_404(User, email=email)
+        if default_token_generator.check_token(user, confirmation_code):
+            token = AccessToken.for_user(user)
+            return Response({'token':f'{token}'}, status=status.HTTP_200_OK)
+        return Response({'confirmation_code':'Неверный код подтверждения'},
+                        status=status.HTTP_400_BAD_REQUEST)
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class UserViewSet(viewsets.ModelViewSet):
