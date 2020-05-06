@@ -7,9 +7,11 @@ from rest_framework_simplejwt.tokens import AccessToken
 from django.contrib.auth.tokens import default_token_generator
 from django.core.mail import send_mail
 
-from .models import User
-from .serializers import SendCodeSerializer, CheckConfirmationCodeSerializer, UserSerializer
+from .models import User, Category, Genre, Title
+from .serializers import SendCodeSerializer, CheckConfirmationCodeSerializer, UserSerializer, CategorySerializer, \
+    TitleSerializer, GenreSerializer
 from .permissions import IsAdmin
+from .pagination import GenrePagination, CategoryPagination
 
 
 @api_view(['POST'])
@@ -38,8 +40,8 @@ def get_jwt_token(request):
         user = get_object_or_404(User, email=email)
         if default_token_generator.check_token(user, confirmation_code):
             token = AccessToken.for_user(user)
-            return Response({'token':f'{token}'}, status=status.HTTP_200_OK)
-        return Response({'confirmation_code':'Неверный код подтверждения'},
+            return Response({'token': f'{token}'}, status=status.HTTP_200_OK)
+        return Response({'confirmation_code': 'Неверный код подтверждения'},
                         status=status.HTTP_400_BAD_REQUEST)
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
@@ -70,3 +72,24 @@ class APIUser(APIView):
                 return Response(serializer.data, status=status.HTTP_200_OK)
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         return Response('Вы не авторизованы', status=status.HTTP_401_UNAUTHORIZED)
+
+
+class CategoryViewSet(viewsets.ModelViewSet):
+    queryset = Category.objects.all()
+    serializer_class = CategorySerializer
+    pagination_class = CategoryPagination
+    permission_classes = [IsAdmin]
+    lookup_field = 'slug'
+
+
+class GenreViewSet(viewsets.ModelViewSet):
+    queryset = Genre.objects.all()
+    serializer_class = GenreSerializer
+    pagination_class = GenrePagination
+    permission_classes = [IsAdmin]
+    lookup_field = 'slug'
+
+
+class TitleViewSet(viewsets.ModelViewSet):
+    queryset = Genre.objects.all()
+    serializer_class = TitleSerializer
