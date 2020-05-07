@@ -11,7 +11,7 @@ from django.core.mail import send_mail
 from .models import User, Category, Genre, Title
 from .serializers import SendCodeSerializer, CheckConfirmationCodeSerializer, UserSerializer, CategorySerializer, \
     TitleSerializer, GenreSerializer
-from .permissions import IsAdmin, IsAdminOrAuthenticated
+from .permissions import IsAdmin
 from .pagination import GenrePagination, CategoryPagination, TitlePagination
 
 
