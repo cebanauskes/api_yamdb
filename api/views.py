@@ -1,6 +1,6 @@
 from django.shortcuts import get_object_or_404
+from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import viewsets, filters, status
-from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.decorators import api_view
@@ -11,8 +11,8 @@ from django.core.mail import send_mail
 from .models import User, Category, Genre, Title
 from .serializers import SendCodeSerializer, CheckConfirmationCodeSerializer, UserSerializer, CategorySerializer, \
     TitleSerializer, GenreSerializer
-from .permissions import IsAdmin
-from .pagination import GenrePagination, CategoryPagination
+from .permissions import IsAdmin, IsAdminOrAuthenticated
+from .pagination import GenrePagination, CategoryPagination, TitlePagination
 
 
 @api_view(['POST'])
@@ -79,7 +79,7 @@ class CategoryViewSet(viewsets.ModelViewSet):
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
     pagination_class = CategoryPagination
-    permission_classes = [IsAuthenticatedOrReadOnly]
+    permission_classes = [IsAdmin]
     filter_backends = [filters.SearchFilter]
     search_fields = ['name', ]
     lookup_field = 'slug'
@@ -89,7 +89,7 @@ class GenreViewSet(viewsets.ModelViewSet):
     queryset = Genre.objects.all()
     serializer_class = GenreSerializer
     pagination_class = GenrePagination
-    permission_classes = [IsAuthenticatedOrReadOnly]
+    permission_classes = [IsAdmin]
     filter_backends = [filters.SearchFilter]
     search_fields = ['name', ]
     lookup_field = 'slug'
@@ -98,3 +98,6 @@ class GenreViewSet(viewsets.ModelViewSet):
 class TitleViewSet(viewsets.ModelViewSet):
     queryset = Genre.objects.all()
     serializer_class = TitleSerializer
+    pagination_class = TitlePagination
+    filter_backends = [DjangoFilterBackend]
+    permission_classes = [IsAdmin]
