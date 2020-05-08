@@ -13,6 +13,7 @@ from .serializers import SendCodeSerializer, CheckConfirmationCodeSerializer, Us
     TitleSerializer, GenreSerializer
 from .permissions import IsAdmin, IsAdminOrReadOnly
 from .pagination import GenrePagination, CategoryPagination, TitlePagination
+from .filters import TitlesFilter
 
 
 @api_view(['POST'])
@@ -111,5 +112,6 @@ class TitleViewSet(viewsets.ModelViewSet):
     queryset = Title.objects.all()
     serializer_class = TitleSerializer
     pagination_class = TitlePagination
-    filter_backends = [DjangoFilterBackend]
     permission_classes = [IsAdminOrReadOnly]
+    filter_backends = [DjangoFilterBackend]
+    filterset_class = TitlesFilter
