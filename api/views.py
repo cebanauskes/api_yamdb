@@ -1,4 +1,5 @@
 from django.shortcuts import get_object_or_404
+from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import viewsets, filters, status
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -10,8 +11,9 @@ from django.core.mail import send_mail
 from .models import User, Category, Genre, Title
 from .serializers import SendCodeSerializer, CheckConfirmationCodeSerializer, UserSerializer, CategorySerializer, \
     TitleSerializer, GenreSerializer
-from .permissions import IsAdmin
-from .pagination import GenrePagination, CategoryPagination
+from .permissions import IsAdmin, IsAdminOrReadOnly
+from .pagination import GenrePagination, CategoryPagination, TitlePagination
+from .filters import TitlesFilter
 
 
 @api_view(['POST'])
@@ -78,18 +80,38 @@ class CategoryViewSet(viewsets.ModelViewSet):
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
     pagination_class = CategoryPagination
-    permission_classes = [IsAdmin]
+    permission_classes = [IsAdminOrReadOnly]
+    filter_backends = [filters.SearchFilter]
+    search_fields = ['name', ]
     lookup_field = 'slug'
+
+    def retrieve(self, request, *args, **kwargs):
+        return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
+
+    def update(self, request, *args, **kwargs):
+        return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
 
 
 class GenreViewSet(viewsets.ModelViewSet):
     queryset = Genre.objects.all()
     serializer_class = GenreSerializer
     pagination_class = GenrePagination
-    permission_classes = [IsAdmin]
+    permission_classes = [IsAdminOrReadOnly]
+    filter_backends = [filters.SearchFilter]
+    search_fields = ['name', ]
     lookup_field = 'slug'
+
+    def retrieve(self, request, *args, **kwargs):
+        return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
+
+    def update(self, request, *args, **kwargs):
+        return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
 
 
 class TitleViewSet(viewsets.ModelViewSet):
-    queryset = Genre.objects.all()
+    queryset = Title.objects.all()
     serializer_class = TitleSerializer
+    pagination_class = TitlePagination
+    permission_classes = [IsAdminOrReadOnly]
+    filter_backends = [DjangoFilterBackend]
+    filterset_class = TitlesFilter
