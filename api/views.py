@@ -10,6 +10,9 @@ from rest_framework.pagination import PageNumberPagination
 from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import AccessToken
 from rest_framework.views import APIView
+from django.contrib.auth.hashers import make_password, check_password
+
+import random
 
 from users.models import User
 from compositions.models import Category, Genre, Title, Review
@@ -24,14 +27,16 @@ def send_confirmation_code(request):
     serializer = SendCodeSerializer(data=request.data)
     email = request.data['email']
     if serializer.is_valid():
+        confirmation_code = ''.join(map(str, random.sample(range(10), 6)))
         user = User.objects.filter(email=email).exists()
         if not user:
             User.objects.create_user(email=email)
-        user = get_object_or_404(User, email=email)
-        confirmation_code = default_token_generator.make_token(user)
+        User.objects.filter(email=email).update(
+            confirmation_code=make_password(confirmation_code, salt=None, hasher='default')
+        )
         mail_subject = 'Код подтверждения на Yamdb.ru'
         message = f'Ваш код подтверждения: {confirmation_code}'
-        send_mail(mail_subject, message, 'Yamdb.ru <admin@yamdb.ru>', [email], fail_silently=False)
+        send_mail(mail_subject, message, 'Yamdb.ru <admin@yamdb.ru>', [email])
         return Response(f'Код отправлен на адрес {email}', status=status.HTTP_200_OK)
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
@@ -43,7 +48,7 @@ def get_jwt_token(request):
         email = serializer.data.get('email')
         confirmation_code = serializer.data.get('confirmation_code')
         user = get_object_or_404(User, email=email)
-        if default_token_generator.check_token(user, confirmation_code):
+        if check_password(confirmation_code, user.confirmation_code):
             token = AccessToken.for_user(user)
             return Response({'token': f'{token}'}, status=status.HTTP_200_OK)
         return Response({'confirmation_code': 'Неверный код подтверждения'},
