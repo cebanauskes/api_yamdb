@@ -38,7 +38,8 @@ INSTALLED_APPS = [
     'rest_framework',
     'django_filters',
     'api',
-    'api_reviews&comments',
+    'users',
+    'compositions',
 ]
 
 MIDDLEWARE = [
@@ -134,7 +135,7 @@ REST_FRAMEWORK = {
     'PAGE_SIZE': 100
 }
 
-AUTH_USER_MODEL = 'api.User'
+AUTH_USER_MODEL = 'users.User'
 
 EMAIL_BACKEND = 'django.core.mail.backends.filebased.EmailBackend'
 EMAIL_FILE_PATH = os.path.join(BASE_DIR, 'sent_emails')
