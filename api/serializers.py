@@ -1,6 +1,7 @@
 from rest_framework import serializers
 
-from .models import User, Category, Genre, Title
+from users.models import User
+from compositions.models import Category, Genre, Title, Comment, Review
 
 
 class SendCodeSerializer(serializers.Serializer):
@@ -57,3 +58,19 @@ class TitleSerializer(serializers.ModelSerializer):
     class Meta:
         fields = ('id', 'name', 'year', 'rating', 'description', 'genre', 'category',)
         model = Title
+
+
+class ReviewSerialier(serializers.ModelSerializer):
+    author = serializers.SlugRelatedField(slug_field='username', read_only=True)
+
+    class Meta:
+        fields = ('id', 'text', 'author', 'score', 'pub_date',)
+        model = Review
+
+
+class CommentSerializer(serializers.ModelSerializer):
+    author = serializers.SlugRelatedField(slug_field='username', read_only=True)
+
+    class Meta:
+        fields = ('id', 'text', 'author', 'pub_date',)
+        model = Comment
