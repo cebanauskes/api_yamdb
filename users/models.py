@@ -23,15 +23,12 @@ class User(AbstractUser):
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = []
 
-    class UserRole(models.TextChoices):
-        user = 'user'
-        moderator = 'moderator'
-        admin = 'admin'
-
-    role = models.CharField(
-        max_length=9,
-        choices=UserRole.choices,
-        default=UserRole.user,
+    USER_ROLE = (
+        ('user', 'user'),
+        ('moderator', 'moderator'),
+        ('admin', 'admin'),
     )
+
+    role = models.CharField(max_length=9, choices=USER_ROLE, default='user')
 
     objects = CustomUserManager()
