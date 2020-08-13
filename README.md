@@ -18,7 +18,7 @@ JWT-токен (Отправление confirmation_code на переданны
 
 Произведения, к которым пишут отзывы (Получить список всех объектов, создать произведение для отзывов, информация об объекте, обновить информацию об объекте, удалить произведение)
 
-# [Полная документация API (redoc.yaml)](https://github.com/cebanauskes/api_yamdb-1/blob/master/static/redoc.yaml)
+[Полная документация API (redoc.yaml)](https://github.com/cebanauskes/api_yamdb-1/blob/master/static/redoc.yaml)
 Участники:
 
 [schetininl](https://github.com/schetininl)- управление пользователями (Auth и Users): система регистрации и аутентификации, права доступа, работа с токеном, система подтверждения e-mail, поля.
