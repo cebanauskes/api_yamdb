@@ -18,10 +18,10 @@ JWT-токен (Отправление confirmation_code на переданны
 
 Произведения, к которым пишут отзывы (Получить список всех объектов, создать произведение для отзывов, информация об объекте, обновить информацию об объекте, удалить произведение)
 
-# [Полная документация API (redoc.yaml)] (https://github.com/cebanauskes/api_yamdb-1/blob/master/static/redoc.yaml)
+# [Полная документация API (redoc.yaml)](https://github.com/cebanauskes/api_yamdb-1/blob/master/static/redoc.yaml)
 Участники
-[schetininl] (https://github.com/schetininl)- управление пользователями (Auth и Users): система регистрации и аутентификации, права доступа, работа с токеном, система подтверждения e-mail, поля.
+[schetininl](https://github.com/schetininl)- управление пользователями (Auth и Users): система регистрации и аутентификации, права доступа, работа с токеном, система подтверждения e-mail, поля.
 
-[GMNaumov] (https://github.com/GMNaumov) - категории (Categories), жанры (Genres) и произведения (Titles): модели, view и эндпойнты для них.
+[GMNaumov](https://github.com/GMNaumov) - категории (Categories), жанры (Genres) и произведения (Titles): модели, view и эндпойнты для них.
 
-[cebanauskes] (https://github.com/cebanauskes) - отзывы (Review) и комментарии (Comments): модели и view, эндпойнты, права доступа для запросов. Рейтинги произведений.
+[cebanauskes](https://github.com/cebanauskes) - отзывы (Review) и комментарии (Comments): модели и view, эндпойнты, права доступа для запросов. Рейтинги произведений.
