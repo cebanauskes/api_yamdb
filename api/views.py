@@ -24,7 +24,7 @@ from .filters import TitlesFilter
 @api_view(['POST'])
 def send_confirmation_code(request):
     serializer = SendCodeSerializer(data=request.data)
-    email = request.data['email']
+    email = request.data.get('email', False)
     if serializer.is_valid():
         confirmation_code = ''.join(map(str, random.sample(range(10), 6)))
         user = User.objects.filter(email=email).exists()
